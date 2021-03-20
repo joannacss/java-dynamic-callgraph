@@ -35,12 +35,6 @@ void print_trace(bool entry,jvmtiEnv *jvmti, JNIEnv* jni, jthread thread, jmetho
     printf("%.*s.", (int) strlen(class_signature)-1, class_signature);
     printf("%s%s\n", method_name, (signature==NULL?"":signature));
     
-    // printf("[%s] %s.%s%s\n",
-    //     thread_info.name, 
-    //     class_signature,
-    //     method_name, 
-    //     (signature==NULL?"":signature)
-    // );
 }
 
 void JNICALL MethodEntry(jvmtiEnv *jvmti, JNIEnv* jni, jthread thread, jmethodID method) {
@@ -78,5 +72,5 @@ JNIEXPORT jint JNICALL Agent_OnLoad(JavaVM *vm, char *options, void *reserved) {
 }
 
 JNIEXPORT void JNICALL Agent_OnUnload(JavaVM *vm) {
-    printf("Max stack depth = %d\n", max_depth);
+    
 }
