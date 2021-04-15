@@ -5,12 +5,28 @@ JDynCg can be used to computes dynamic call graphs using Java. It is an JVMTI ag
 
 ## Compile
 
-** Windows **:
-cl /I<jre_path>\include /MD /FetiSample.dll tiSample.c /link /DLL
+
+** MacOS **
+
+`gcc -fPIC -shared -I $JAVA_HOME/include -I $JAVA_HOME/include/darwin -o libdyncg.so dyncg.c`
 
 
 
-## How to Run
+** Windows **
 
 
-## How to 
+`gcc -fPIC -shared -I $JAVA_HOME\include -I $JAVA_HOME\include\win32 -o libdyncg.dll dyncg.c`
+
+or
+
+`cl /I<jre_path>\include /MD /FetiSample.dll tiSample.c /link /DLL`
+
+
+
+## Running the Agent
+
+
+`java -agentpath:/path/to/libdyncg.dll fully.qualified.ClassName`
+
+
+
