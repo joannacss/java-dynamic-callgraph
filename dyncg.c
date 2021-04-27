@@ -3,7 +3,6 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <string.h>
-// #include "prog_stack.h"
 
 
 static volatile int max_depth = 0;
@@ -17,9 +16,7 @@ static int adjust_stack_depth(jvmtiEnv *jvmti, int delta) {
 }
 
 
-void print_trace(bool entry,jvmtiEnv *jvmti, JNIEnv* jni, jthread thread, jmethodID method){
-    if(entry) printf(">");
-    else printf("<");
+void print_trace(bool entry, jvmtiEnv *jvmti, JNIEnv* jni, jthread thread, jmethodID method){
 
     char * method_name, * signature, *generic_signature;
     char * class_signature, *class_generic_signature;
@@ -31,10 +28,10 @@ void print_trace(bool entry,jvmtiEnv *jvmti, JNIEnv* jni, jthread thread, jmetho
     (*jvmti)->GetMethodDeclaringClass(jvmti, method, &klass);
     (*jvmti)->GetClassSignature(jvmti, klass,&class_signature,&class_generic_signature);
 
+    printf("%s", (entry ? ">" : "<"));
     printf("[%s] ",thread_info.name);
     printf("%.*s.", (int) strlen(class_signature)-1, class_signature);
     printf("%s%s\n", method_name, (signature==NULL?"":signature));
-    
 }
 
 void JNICALL MethodEntry(jvmtiEnv *jvmti, JNIEnv* jni, jthread thread, jmethodID method) {
@@ -72,5 +69,5 @@ JNIEXPORT jint JNICALL Agent_OnLoad(JavaVM *vm, char *options, void *reserved) {
 }
 
 JNIEXPORT void JNICALL Agent_OnUnload(JavaVM *vm) {
-    
+    // print a runtime call graph here
 }

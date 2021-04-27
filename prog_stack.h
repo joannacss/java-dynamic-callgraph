@@ -3,34 +3,31 @@
 
 
 typedef struct {
-    char * caller_name; char * caller_signature;
-    char * callee_name; char * callee_signature;
-    int frequency;
-}JDynCallgraph;
+	char * class_signature;
+    char * method_name;
+    char * method_signature;
+    struct StackNode * next;
+}StackNode;
 
 
 typedef struct {
-    JDynCallgraph * value;
-    JDynCallgraph * next;
-}JDynStack;
+    StackNode * top;
+}Stack;
 
 
 
+Stack * init_program_stack();
 
 
-/** Initializes Stack */
-JDynStack * top = NULL;
+Stack * new_node(char * method_name, char * method_signature);
 
+bool isEmpty(Stack * s);
 
-JDynStack * init_program_stack();
+StackNode * peek(Stack * s);
 
-bool isEmpty();
+StackNode * pop(Stack * s);
 
-JDynCallgraph * peek();
-
-JDynCallgraph * pop();
-
-void push(JDynCallgraph * value);
+void push(Stack * s, StackNode * new_node);
 
 
 #endif

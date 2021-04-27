@@ -1,59 +1,45 @@
 #include "prog_stack.h"
 
-JDynStack * init_program_stack(){
-    return (JDynCallgraph*) malloc(sizeof(JDynCallgraph));
+Stack * init_program_stack(){
+    Stack * s = (Stack*) malloc(sizeof(Stack));
+    s->top = NULL;
+    return s;
+}
+
+Stack * new_node(char * class_signature, char * method_name, char * method_signature){
+    StackNode * node = (StackNode*) malloc(sizeof(StackNode));
+
+    node->class_signature = class_signature;
+    node->method_name = method_name;
+    node->method_signature = method_signature;
+    node->next = NULL;
+
+    return node;
 }
 
 
-bool isEmpty() {
-   return top == NULL;
+bool isEmpty(Stack *s) {
+   return s->top == NULL;
 }
 
-JDynCallgraph * peek(){
-    return isEmpty() ? NULL : top->value;
+StackNode * peek(Stack *s){
+    return isEmpty(s) ? NULL : s->top->value;
 }
 
-JDynCallgraph * pop(){
-    if(!isEmpty()){
-        JDynCallgraph current_value = top->value;
-        top->value = current_value->next;
-        if(top->value != NULL)
-            top->next = top->value->next;
-        return current_value;    
+StackNode * pop(Stack *s){
+    if(!isEmpty(s)){
+        StackNode * current_top = s->top;
+        s->top = s->top->next;
+        return current_top;
     }
     return NULL;
 }
 
-// void push(JDynCallgraph * value);
 
+void push(Stack * s, StackNode * new_node){
+    new_node->next = s->top;
+    s->top = new_node;
+}
 
-
-
-// JDynCallgraph peek() {
-//    return top.value;
-// }
-
-
-// int pop() {
-//    int data;
-    
-//    if(!isempty()) {
-//       data = stack[top];
-//       top = top - 1;   
-//       return data;
-//    } else {
-//       printf("Could not retrieve data, Stack is empty.\n");
-//    }
-// }
-
-// int push(int data) {
-
-//    if(!isfull()) {
-//       top = top + 1;   
-//       stack[top] = data;
-//    } else {
-//       printf("Could not insert data, Stack is full.\n");
-//    }
-// }
 
 

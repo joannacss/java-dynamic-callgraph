@@ -30,3 +30,22 @@ or
 
 
 
+## Output
+
+The agent output the execution trace with the following format:
+
+`> [thread_name] class_signature.method_signature`
+`< [thread_name] class_signature.method_signature`
+
+Lines preceded with `>`, indicate method entries (start of execution) and `<` indicates a method exit (end of execution).
+
+An execution trace example:
+
+```
+>[main] Ljava/io/FileInputStream.read()I
+>[main] Ljava/io/FileInputStream.read0()I
+<[main] Ljava/io/FileInputStream.read0()I
+<[main] Ljava/io/FileInputStream.read()I
+```
+
+
