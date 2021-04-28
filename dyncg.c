@@ -21,7 +21,7 @@ static int adjust_stack_depth(jvmtiEnv *jvmti, int delta) {
 }
 
 
-void print_trace(bool entry, jvmtiEnv *jvmti, JNIEnv* jni, jthread thread, jmethodID method){
+static void print_trace(bool entry, jvmtiEnv *jvmti, JNIEnv* jni, jthread thread, jmethodID method){
 
     char * method_name, * signature, *generic_signature;
     char * class_signature, *class_generic_signature;
@@ -38,8 +38,10 @@ void print_trace(bool entry, jvmtiEnv *jvmti, JNIEnv* jni, jthread thread, jmeth
     if(entry) {
         StackNode * from_node = peek(prog_stack);
         // adds an edge to the call graph
-        if(from_node != NULL) 
-            add_edge(cg, new_cg_node(from_node), new_cg_node(new_node));
+        if(from_node != NULL) {
+            add_edge(cg, from_node, new_node);
+            fprintf(stderr, "AFTER AFTER COUNT=%d\n", HASH_COUNT(cg));
+        }
         // add to the program stack
         push(prog_stack, new_node);        
     }else{
@@ -70,9 +72,9 @@ void JNICALL MethodExit(jvmtiEnv *jvmti, JNIEnv* jni, jthread thread, jmethodID 
 
 JNIEXPORT jint JNICALL Agent_OnLoad(JavaVM *vm, char *options, void *reserved) {
 
-
+fprintf(stderr, "Agent_OnLoad");
     prog_stack = init_program_stack();
-    cg = NULL;
+    
 
     jvmtiEnv* jvmti;
     (*vm)->GetEnv(vm, (void**)&jvmti, JVMTI_VERSION_1_0);

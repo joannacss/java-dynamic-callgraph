@@ -1,48 +1,40 @@
 #ifndef _JDYNCG_CALLGRAPH_H
 #define _JDYNCG_CALLGRAPH_H
 
-#include <stdio.h>
-#include <stdlib.h>
+#include <stdlib.h>    /* malloc       */
+#include <stddef.h>    /* offsetof     */
+#include <stdio.h>     /* printf       */
+#include <string.h>    /* memset       */
+#include <pthread.h>
+
 #include "prog_stack.h"
 #include "lib/uthash.h"
 
-typedef struct CGNode CGNode;
 typedef struct CallGraph CallGraph;
 typedef struct Edge Edge;
 
-struct CGNode{
-    char * class_signature;
-    char * method_name;
-    char * method_signature;    
-};
-
-
 struct Edge{
-    CGNode * from;
-    CGNode * to;    
+    char * caller_class_signature; char * caller_method_name; char * caller_method_signature;
+    char * callee_class_signature; char * callee_method_name; char * callee_method_signature;    
 };
-
-
 
 struct CallGraph{
-    Edge edge; /* key */
+    /* key */
+    Edge edge;
     int count; /* number of times it occurred at runtime */
     UT_hash_handle hh; /* makes this data structure hashable */
 };
 
 
 
-CallGraph * init_callgraph();
+CallGraph * new_callgraph(Edge * edge);
 
 
-CGNode * new_cg_node(StackNode * stack_node);
+Edge * new_edge(StackNode * from, StackNode * to);
 
-Edge * new_edge(CGNode * from, CGNode * to);
-
-void add_edge(volatile CallGraph * cg, CGNode * from, CGNode * to);
+void add_edge(CallGraph * cg, StackNode * from, StackNode * to);
 
 
-void print_cg_node(CGNode * node);
 
-void print_callgraph(volatile CallGraph *cg);
+void print_callgraph(CallGraph *cg);
 #endif
