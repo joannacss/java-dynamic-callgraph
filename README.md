@@ -1,18 +1,24 @@
-# JDynCg: java-dynamic-callgraph
-JDynCg can be used to computes dynamic call graphs using Java. It is an JVMTI agent that captures the execution traces to build the call graph.
+# JDynCg: Java Dynamic Call Graph extractor
+**JDynCg** can be used to compute dynamic call graphs for Java programs. It is an JVMTI agent that captures the execution traces to build the call graph.
 
 *(This is a working progress; at this moment the code computes an execution trace which can be parsed into a call graph).*
+
+
+## Requirements
+- GCC 
+- `JAVA_HOME` is set
+
 
 ## Compile
 
 
-** MacOS **
+**MacOS**
 
 `gcc -fPIC -shared -I $JAVA_HOME/include -I $JAVA_HOME/include/darwin -o libdyncg.so dyncg.c`
 
 
 
-** Windows **
+**Windows**
 
 
 `gcc -fPIC -shared -I $JAVA_HOME\include -I $JAVA_HOME\include\win32 -o libdyncg.dll dyncg.c`

@@ -2,7 +2,7 @@ CC=gcc
 CFLAGS=-fPIC -I ${JAVA_HOME}/include -I ${JAVA_HOME}/include/darwin
 
 compile: 
-	${CC} ${CFLAGS} -shared -o libdyncg.so dyncg.c
+	${CC} ${CFLAGS} -shared -o libdyncg.so *.c
 
 clean:
 	rm *.so

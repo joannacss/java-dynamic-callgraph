@@ -3,7 +3,12 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <string.h>
+#include "prog_stack.h"
+#include "callgraph.h"
 
+
+static volatile Stack * prog_stack = NULL;
+static volatile CallGraph * cg = NULL;
 
 static volatile int max_depth = 0;
 
@@ -28,6 +33,21 @@ void print_trace(bool entry, jvmtiEnv *jvmti, JNIEnv* jni, jthread thread, jmeth
     (*jvmti)->GetMethodDeclaringClass(jvmti, method, &klass);
     (*jvmti)->GetClassSignature(jvmti, klass,&class_signature,&class_generic_signature);
 
+    // add to the program stack
+    StackNode * new_node = new_stack_node(class_signature,  method_name, signature);
+    if(entry) {
+        StackNode * from_node = peek(prog_stack);
+        // adds an edge to the call graph
+        if(from_node != NULL) 
+            add_edge(cg, new_cg_node(from_node), new_cg_node(new_node));
+        // add to the program stack
+        push(prog_stack, new_node);        
+    }else{
+        // removes from the program stack
+        pop(prog_stack);
+    }
+
+    // prints execution trace
     printf("%s", (entry ? ">" : "<"));
     printf("[%s] ",thread_info.name);
     printf("%.*s.", (int) strlen(class_signature)-1, class_signature);
@@ -49,6 +69,11 @@ void JNICALL MethodExit(jvmtiEnv *jvmti, JNIEnv* jni, jthread thread, jmethodID 
 }
 
 JNIEXPORT jint JNICALL Agent_OnLoad(JavaVM *vm, char *options, void *reserved) {
+
+
+    prog_stack = init_program_stack();
+    cg = NULL;
+
     jvmtiEnv* jvmti;
     (*vm)->GetEnv(vm, (void**)&jvmti, JVMTI_VERSION_1_0);
 
@@ -70,4 +95,5 @@ JNIEXPORT jint JNICALL Agent_OnLoad(JavaVM *vm, char *options, void *reserved) {
 
 JNIEXPORT void JNICALL Agent_OnUnload(JavaVM *vm) {
     // print a runtime call graph here
+    print_callgraph(cg);
 }

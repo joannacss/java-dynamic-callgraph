@@ -1,33 +1,40 @@
 #ifndef _JDYNCG_STACK_H
 #define _JDYNCG_STACK_H
 
+#include <stdlib.h>
+#include <stdbool.h>
 
-typedef struct {
+typedef struct StackNode StackNode;
+
+struct StackNode{
 	char * class_signature;
     char * method_name;
     char * method_signature;
-    struct StackNode * next;
-}StackNode;
+    StackNode * next;
+};
 
 
-typedef struct {
+typedef struct Stack Stack;
+
+struct Stack{
     StackNode * top;
-}Stack;
+    int count;
+};
 
 
 
 Stack * init_program_stack();
 
 
-Stack * new_node(char * method_name, char * method_signature);
+StackNode * new_stack_node(char * class_signature, char * method_name, char * method_signature);
 
-bool isEmpty(Stack * s);
+bool isEmpty(volatile Stack * s);
 
-StackNode * peek(Stack * s);
+StackNode * peek(volatile Stack * s);
 
-StackNode * pop(Stack * s);
+StackNode * pop(volatile Stack * s);
 
-void push(Stack * s, StackNode * new_node);
+void push(volatile  Stack * s, StackNode * new_node);
 
 
 #endif

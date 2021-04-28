@@ -3,10 +3,11 @@
 Stack * init_program_stack(){
     Stack * s = (Stack*) malloc(sizeof(Stack));
     s->top = NULL;
+    s->count = 0;
     return s;
 }
 
-Stack * new_node(char * class_signature, char * method_name, char * method_signature){
+StackNode * new_stack_node(char * class_signature, char * method_name, char * method_signature){
     StackNode * node = (StackNode*) malloc(sizeof(StackNode));
 
     node->class_signature = class_signature;
@@ -18,27 +19,29 @@ Stack * new_node(char * class_signature, char * method_name, char * method_signa
 }
 
 
-bool isEmpty(Stack *s) {
+bool isEmpty(volatile Stack *s) {
    return s->top == NULL;
 }
 
-StackNode * peek(Stack *s){
-    return isEmpty(s) ? NULL : s->top->value;
+StackNode * peek(volatile Stack *s){
+    return isEmpty(s) ? NULL : s->top;
 }
 
-StackNode * pop(Stack *s){
+StackNode * pop(volatile Stack *s){
     if(!isEmpty(s)){
         StackNode * current_top = s->top;
         s->top = s->top->next;
+        s->count = s->count-1;
         return current_top;
     }
     return NULL;
 }
 
 
-void push(Stack * s, StackNode * new_node){
+void push(volatile Stack * s, StackNode * new_node){
     new_node->next = s->top;
     s->top = new_node;
+    s->count = s->count+1;
 }
 
 
