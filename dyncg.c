@@ -39,8 +39,8 @@ static void print_trace(bool entry, jvmtiEnv *jvmti, JNIEnv* jni, jthread thread
         StackNode * from_node = peek(prog_stack);
         // adds an edge to the call graph
         if(from_node != NULL) {
-            add_edge(cg, from_node, new_node);
-            fprintf(stderr, "AFTER AFTER COUNT=%d\n", HASH_COUNT(cg));
+            cg = add_edge(cg, from_node, new_node);
+            
         }
         // add to the program stack
         push(prog_stack, new_node);        
@@ -72,7 +72,7 @@ void JNICALL MethodExit(jvmtiEnv *jvmti, JNIEnv* jni, jthread thread, jmethodID 
 
 JNIEXPORT jint JNICALL Agent_OnLoad(JavaVM *vm, char *options, void *reserved) {
 
-fprintf(stderr, "Agent_OnLoad");
+
     prog_stack = init_program_stack();
     
 

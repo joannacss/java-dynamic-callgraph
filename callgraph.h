@@ -32,7 +32,7 @@ CallGraph * new_callgraph(Edge * edge);
 
 Edge * new_edge(StackNode * from, StackNode * to);
 
-void add_edge(CallGraph * cg, StackNode * from, StackNode * to);
+CallGraph * add_edge(CallGraph * cg, StackNode * from, StackNode * to);
 
 
 
