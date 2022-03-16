@@ -6,18 +6,20 @@ JDynCg can be used to computes dynamic call graphs using Java. It is an JVMTI ag
 ## Compile
 
 
-** MacOS **
+**MacOS**
 
 `gcc -fPIC -shared -I $JAVA_HOME/include -I $JAVA_HOME/include/darwin -o libdyncg.so dyncg.c`
 
 
 
-** Windows **
+**Windows**
 
 
 `gcc -fPIC -shared -I $JAVA_HOME\include -I $JAVA_HOME\include\win32 -o libdyncg.dll dyncg.c`
 
+
 or
+
 
 `cl /I<jre_path>\include /MD /FetiSample.dll tiSample.c /link /DLL`
 
@@ -37,7 +39,8 @@ The agent output the execution trace with the following format:
 `> [thread_name] class_signature.method_signature`
 `< [thread_name] class_signature.method_signature`
 
-Lines preceded with `>`, indicate method entries (start of execution) and `<` indicates a method exit (end of execution).
+Lines preceded with `>`, indicate **method entries** (start of execution) and `<` indicates a **method exit** (end of execution).
+
 
 An execution trace example:
 
@@ -49,3 +52,4 @@ An execution trace example:
 ```
 
 
+The execution trace is saved into a file called `trace.txt` in the current directory.

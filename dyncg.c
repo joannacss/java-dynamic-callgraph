@@ -6,6 +6,9 @@
 
 
 static volatile int max_depth = 0;
+FILE *output_file = NULL;
+
+
 
 static int adjust_stack_depth(jvmtiEnv *jvmti, int delta) {
     intptr_t depth = 0;
@@ -28,10 +31,10 @@ void print_trace(bool entry, jvmtiEnv *jvmti, JNIEnv* jni, jthread thread, jmeth
     (*jvmti)->GetMethodDeclaringClass(jvmti, method, &klass);
     (*jvmti)->GetClassSignature(jvmti, klass,&class_signature,&class_generic_signature);
 
-    printf("%s", (entry ? ">" : "<"));
-    printf("[%s] ",thread_info.name);
-    printf("%.*s.", (int) strlen(class_signature)-1, class_signature);
-    printf("%s%s\n", method_name, (signature==NULL?"":signature));
+    fprintf(output_file, "%s", (entry ? ">" : "<"));
+    fprintf(output_file, "[%s] ",thread_info.name);
+    fprintf(output_file, "%.*s.", (int) strlen(class_signature)-1, class_signature);
+    fprintf(output_file, "%s%s\n", method_name, (signature==NULL?"":signature));
 }
 
 void JNICALL MethodEntry(jvmtiEnv *jvmti, JNIEnv* jni, jthread thread, jmethodID method) {
@@ -49,6 +52,15 @@ void JNICALL MethodExit(jvmtiEnv *jvmti, JNIEnv* jni, jthread thread, jmethodID 
 }
 
 JNIEXPORT jint JNICALL Agent_OnLoad(JavaVM *vm, char *options, void *reserved) {
+    // initializes output
+    output_file = fopen("trace.txt", "w");
+    //if file pointer is null, print the statement
+    if (output_file == NULL){
+        printf("Sorry. . The file you are trying to open do not exist . . .");
+        return -1;
+    }
+    
+    // initializes JVM agent
     jvmtiEnv* jvmti;
     (*vm)->GetEnv(vm, (void**)&jvmti, JVMTI_VERSION_1_0);
 
@@ -64,7 +76,9 @@ JNIEXPORT jint JNICALL Agent_OnLoad(JavaVM *vm, char *options, void *reserved) {
 
     (*jvmti)->SetEventNotificationMode(jvmti, JVMTI_ENABLE, JVMTI_EVENT_METHOD_ENTRY, NULL);
     (*jvmti)->SetEventNotificationMode(jvmti, JVMTI_ENABLE, JVMTI_EVENT_METHOD_EXIT, NULL);
-
+    
+    
+    
     return 0;
 }
 
