@@ -4,10 +4,13 @@
 #include <stdbool.h>
 #include <string.h>
 
-
+// https://www.oracle.com/technical-resources/articles/javase/jvmti.html
+// https://docs.oracle.com/javase/8/docs/platform/jvmti/jvmti.html#jmethodID
+// https://stackoverflow.com/questions/52185905/is-there-a-way-to-know-maximally-reached-jvm-call-stack-depth-for-a-particular-p
 static volatile int max_depth = 0;
 FILE *output_file = NULL;
 
+#define TRACK_OPAQUE_CODE 0
 
 
 static int adjust_stack_depth(jvmtiEnv *jvmti, int delta) {
@@ -30,6 +33,14 @@ void print_trace(bool entry, jvmtiEnv *jvmti, JNIEnv* jni, jthread thread, jmeth
     (*jvmti)->GetThreadInfo(jvmti, thread, &thread_info);
     (*jvmti)->GetMethodDeclaringClass(jvmti, method, &klass);
     (*jvmti)->GetClassSignature(jvmti, klass,&class_signature,&class_generic_signature);
+
+    jboolean isSynthetic, isNative;
+    (*jvmti)->IsMethodNative(jvmti, method, &isNative);    
+    (*jvmti)->IsMethodSynthetic(jvmti, method, &isSynthetic);    
+    // method is native or synthetic, and we disabled tracking opaque code
+    // early return so that we don't track the edge
+    if((isSynthetic || isNative) && !(TRACK_OPAQUE_CODE))
+        return;
 
     fprintf(output_file, "%s", (entry ? ">" : "<"));
     fprintf(output_file, "[%s] ",thread_info.name);
