@@ -131,7 +131,9 @@ JNIEXPORT jint JNICALL Agent_OnLoad(JavaVM *vm, char *options, void *reserved) {
     (*jvmti)->SetEventNotificationMode(jvmti, JVMTI_ENABLE, JVMTI_EVENT_METHOD_ENTRY, NULL);
     (*jvmti)->SetEventNotificationMode(jvmti, JVMTI_ENABLE, JVMTI_EVENT_METHOD_EXIT, NULL);
     
-    
+    jvmtiError error = (*jvmti)->CreateRawMonitor(jvmti, "Tracer callbacks", &callback_lock);
+    check_jvmti_error(jvmti, error, "Cannot create raw monitor");
+
     return 0;
 }
 
